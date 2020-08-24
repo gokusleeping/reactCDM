@@ -3,7 +3,9 @@ import React, { useState, useEffect } from "react";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
 import { Segment, Modal, Button, List } from "semantic-ui-react";
 import QUERY_ATTENDENCE_MONTH from "../../queries/query/attendenceMonth";
-
+import "./canvasjs.react.js";
+import "./canvasjs.min.js";
+import Graph from "./graph.jsx";
 export default () => {
 	const [modal, showModal] = useState(false);
 	const [onDate, setOnDate] = useState(new Date());
@@ -33,7 +35,7 @@ export default () => {
 	if (loading) return <h2>Loading...</h2>;
 	if (error) return <h2>{error.toString().split(`: `)[2]}</h2>;
 
-	return (
+	return (<>
 		<Segment className={change ? `loading` : ``}>
 			<CalendarTab
 				className="react-calendar"
@@ -105,5 +107,9 @@ export default () => {
 				</Modal.Actions>
 			</Modal>
 		</Segment>
+	<Segment>
+		<Graph/>
+		</Segment>
+	</>
 	);
 };
