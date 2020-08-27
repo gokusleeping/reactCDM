@@ -1,31 +1,58 @@
-/* App.js */
+/* Graph.js */
+import "./canvasjs.min.js";
+import "./canvasjs.react.js";
+import CanvasJSReact from './canvasjs.react';
 var React = require('react');
 var Component = React.Component;
-var CanvasJSReact = require('./canvasjs.react');
-var CanvasJS = CanvasJSReact.CanvasJS;
+//var CanvasJSReact = require('./canvasjs.react');
+//var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
-var dps = [{x: 1, y: 10}, {x: 2, y: 10}, {x: 3, y: 10}, {x: 4, y: 10}, {x: 5, y: 10}];
+
 class Graph extends Component {
 	render() {
 		const options = {
 			theme: "light2",
 			title: {
-				text: "Comparison of Exchange Rates - 2017"
+				text: "This Month Student Attendence	"
 			},
 			subtitles: [{
-				text: "GBP & USD to INR"
+				text: "classname/month"
 			}],
+			axisX:{
+				interval: 1,
+				intervaltype:"day",
+			},
 			axisY: {
-				prefix: "₹"
+				interval:2,
 			},
 			toolTip: {
 				shared: true
 			},
 			data: [
-				{
-					type: "line",
-					dataPoints : dps
-				}
+			{
+				type: "area",
+				name: "Present",
+				showInLegend: true,
+				xValueFormatString: "MMM YYYY",
+				yValueFormatString: "#",
+				dataPoints: [
+					{ x: new Date("2017- 01- 01"), y: 35},
+					{ x: new Date("2017- 02- 01"), y: 32},
+
+				]
+			},
+			{
+				type: "area",
+				name: "Absent",
+				showInLegend: true,
+				xValueFormatString: "MMM YYYY",
+				yValueFormatString: "#",
+				dataPoints: [
+					{ x: new Date("2017- 01- 01"), y: 5},
+					{ x: new Date("2017- 02- 01"), y: 8},
+
+				]
+			}
 			]
 		}
 		return (
@@ -35,8 +62,8 @@ class Graph extends Component {
 				/>
 			{/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
 			</div>
-			);
+		);
 	}
 }
-//module.exports = Graph;
+//module.exports = Graph;  
 export default Graph;
