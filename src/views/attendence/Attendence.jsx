@@ -1,13 +1,14 @@
-import MUTATION_ADD_ATTENDENCE from "../../queries/mutation/addAttendence";
-import { Segment, Table, Button, Input, Divider } from "semantic-ui-react";
-import React, { useState, useEffect } from "react";
-import { useQuery, useMutation } from "@apollo/react-hooks";
-import QUERY_STUDENTS from "../../queries/query/students";
-import Notify from "../../common/Notify";
+import MUTATION_ADD_ATTENDENCE from "../../queries/mutation/addAttendence"
+import { Segment, Table, Button, Input, Divider } from "semantic-ui-react"
+import { useQuery, useMutation } from "@apollo/react-hooks"
+import QUERY_STUDENTS from "../../queries/query/students"
+import React, { useState, useEffect } from "react"
+import Notify from "../../common/Notify"
 
 const StudentsList = ({ students, present, setPresent, holiday }) =>
 	students.map((student, idx) => (
 		<Table.Row key={idx} children="button">
+			<Table.Cell>{idx + 1}</Table.Cell>
 			<Table.Cell>{student.rollNumber ? student.rollNumber : `- - -`}</Table.Cell>
 			<Table.Cell>{student.name.first}</Table.Cell>
 			<Table.Cell>{student.name.last ? student.name.last : `- - -`}</Table.Cell>
@@ -17,53 +18,49 @@ const StudentsList = ({ students, present, setPresent, holiday }) =>
 					fluid
 					disabled={holiday}
 					color={present.includes(student._id) ? `green` : `youtube`}
-					onClick={() =>
-						present.includes(student._id)
-							? setPresent(present.filter((x) => x !== student._id))
-							: setPresent([...present, student._id])
-					}
+					onClick={() => (present.includes(student._id) ? setPresent(present.filter(x => x !== student._id)) : setPresent([...present, student._id]))}
 				>
 					{present.includes(student._id) ? `Yes` : `No`}
 				</Button>
 			</Table.Cell>
 		</Table.Row>
-	));
+	))
 
-const Attendence = (props) => {
-	const { loading, error, data } = useQuery(QUERY_STUDENTS);
-	const [notification, setNotification] = useState([]);
-	const [variables, setVariables] = useState({});
-	const [holiday, setHoliday] = useState(false);
-	const [present, setPresent] = useState([]);
+const Attendence = props => {
+	const { loading, error, data } = useQuery(QUERY_STUDENTS)
+	const [notification, setNotification] = useState([])
+	const [variables, setVariables] = useState({})
+	const [holiday, setHoliday] = useState(false)
+	const [present, setPresent] = useState([])
 	const [addAttendence, { loading: saving }] = useMutation(MUTATION_ADD_ATTENDENCE, {
 		update: (_, { data }) => {
-			setNotification([...notification, { message: data.addAttendence }]);
+			setNotification([...notification, { message: data.addAttendence }])
 		},
 		onError: ({ graphQLErrors, networkError, message }) => {
-			if (networkError) setNotification([...notification, { error: message.split(`: `)[1] }]);
-			else setNotification([...notification, { message: message.split(`: `)[1], error: graphQLErrors[0].extensions.error }]);
+			if (networkError) setNotification([...notification, { error: message.split(`: `)[1] }])
+			else setNotification([...notification, { message: message.split(`: `)[1], error: graphQLErrors[0].extensions.error }])
 		},
 		variables,
-	});
+	})
 
 	useEffect(() => {
 		data &&
-			setVariables((variables) => {
+			setVariables(variables => {
 				return {
 					...variables,
 					day: new Date().toISOString().slice(0, 10),
 					class: data.students[0].class._id,
-				};
-			});
-	}, [data]);
+				}
+			})
+	}, [data])
 	useEffect(() => {
-		setVariables((variables) => {
-			return { ...variables, students: present };
-		});
-	}, [present]);
+		setVariables(variables => {
+			return { ...variables, students: present }
+		})
+	}, [present])
 
-	if (loading) return <h2>Loading...</h2>;
-	if (error) return <h2>{error.toString().split(`: `)[2]}</h2>;
+	if (loading) return <h2>Loading...</h2>
+	if (error) return <h2>{error.toString().split(`: `)[2]}</h2>
 
 	return (
 		<Segment className={saving ? `loading` : ``}>
@@ -84,6 +81,7 @@ const Attendence = (props) => {
 					<Table attached="bottom" sortable compact celled striped>
 						<Table.Header>
 							<Table.Row>
+								<Table.HeaderCell>S. No.</Table.HeaderCell>
 								<Table.HeaderCell>Roll No.</Table.HeaderCell>
 								<Table.HeaderCell>First Name</Table.HeaderCell>
 								<Table.HeaderCell>Last Name</Table.HeaderCell>
@@ -95,21 +93,21 @@ const Attendence = (props) => {
 						</Table.Body>
 						<Table.Footer fullWidth>
 							<Table.Row>
-								<Table.HeaderCell colSpan="1">
+								<Table.HeaderCell colSpan="2">
 									<Button
 										fluid
 										as="p"
 										color="facebook"
 										onClick={() => {
-											setHoliday((holiday) => {
+											setHoliday(holiday => {
 												holiday
 													? delete variables.holiday
-													: setVariables((variables) => {
-															delete variables.students;
-															return variables;
-													  });
-												return !holiday;
-											});
+													: setVariables(variables => {
+															delete variables.students
+															return variables
+													  })
+												return !holiday
+											})
 										}}
 									>
 										Holiday
@@ -121,7 +119,7 @@ const Attendence = (props) => {
 									</Table.HeaderCell>
 								)}
 								<Table.HeaderCell colSpan={holiday ? 1 : 3} textAlign="right">
-									<Button disabled={!variables.holiday && !variables.students} as="p" onClick={() => addAttendence()}>
+									<Button fluid disabled={!variables.holiday && !variables.students} as="p" onClick={() => addAttendence()}>
 										Submit
 									</Button>
 								</Table.HeaderCell>
@@ -136,7 +134,7 @@ const Attendence = (props) => {
 				notification.length > 0 && <Notify list={notification} />
 			)}
 		</Segment>
-	);
-};
+	)
+}
 
-export default Attendence;
+export default Attendence
