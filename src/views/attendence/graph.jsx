@@ -1,69 +1,60 @@
-/* Graph.js */
-import "./canvasjs.min.js";
-import "./canvasjs.react.js";
-import CanvasJSReact from './canvasjs.react';
-var React = require('react');
-var Component = React.Component;
-//var CanvasJSReact = require('./canvasjs.react');
-//var CanvasJS = CanvasJSReact.CanvasJS;
-var CanvasJSChart = CanvasJSReact.CanvasJSChart;
-
-class Graph extends Component {
-	render() {
-		const options = {
-			theme: "light2",
-			title: {
-				text: "This Month Student Attendence	"
-			},
-			subtitles: [{
-				text: "classname/month"
-			}],
-			axisX:{
-				interval: 1,
-				intervaltype:"day",
-			},
-			axisY: {
-				interval:2,
-			},
-			toolTip: {
-				shared: true
-			},
-			data: [
-			{
-				type: "area",
-				name: "Present",
-				showInLegend: true,
-				xValueFormatString: "MMM YYYY",
-				yValueFormatString: "#",
-				dataPoints: [
-					{ x: new Date("2017- 01- 01"), y: 35},
-					{ x: new Date("2017- 02- 01"), y: 32},
-
-				]
-			},
-			{
-				type: "area",
-				name: "Absent",
-				showInLegend: true,
-				xValueFormatString: "MMM YYYY",
-				yValueFormatString: "#",
-				dataPoints: [
-					{ x: new Date("2017- 01- 01"), y: 5},
-					{ x: new Date("2017- 02- 01"), y: 8},
-
-				]
-			}
-			]
-		}
-		return (
-			<div>
-				<CanvasJSChart options = {options}
-						/* onRef={ref => this.chart = ref} */
-				/>
-			{/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
-			</div>
-		);
-	}
-}
-//module.exports = Graph;  
-export default Graph;
+import React from 'react'
+//import "react-charts/dist/react-charts.min.mjs"
+import { Chart } from 'react-charts'
+//import useChartConfig from 'hooks/useChartConfig'
+//import Box from "/components/Box"
+//import SyntaxHighlighter from 'components/SyntaxHighlighter'
+//let sourceCode
+//export default Mychart () => {
+  
+function MyChart() {
+    const data = React.useMemo(
+      () => [
+        {
+          label: 'Series 1',
+          data: [
+            { primary: 1, secondary: 3 },
+            { primary: 2, secondary: 5 },
+            { primary: 4, secondary: 6 },
+          ],
+        },
+        {
+          label: 'Series 2',
+          data: [
+            { primary: 1, secondary: 4 },
+            { primary: 2, secondary: 8 },
+            { primary: 3, secondary: 7 },
+          ],
+        },
+        
+      ],
+      []
+    )
+  const series = React.useMemo(
+    () => ({
+      showPoints: "true",
+      //type: 'area'
+    }),
+    []
+  )
+    const axes = React.useMemo(
+      () => [
+        { primary: true, type: 'linear', position: 'bottom' },
+        { type: 'linear', position: 'left' },
+      ],
+      []
+    )
+  
+    return (
+      <div
+        style={{
+          width: '400px',
+          height: '300px',
+        }}
+      >
+        <Chart data={data} axes={axes} series={series}
+        tooltip primaryCursor secondaryCursor />
+      </div>
+    )
+  }
+  export default MyChart
