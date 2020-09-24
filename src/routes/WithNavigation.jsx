@@ -2,14 +2,21 @@ import SideMenu from "../views/SideMenu"
 import { AuthContext } from "../common/context"
 import React, { useState, useContext } from "react"
 import { Route, Redirect, Link } from "react-router-dom"
-import { Container, Button, Menu, Sidebar, Icon } from "semantic-ui-react"
+import { Container, Button, Menu, Sidebar, Icon, Segment } from "semantic-ui-react"
 
 import ChangePassword from "../views/auth/ChangePassword"
+import { toast } from "react-toastify"
 
 const Navigator = ({ component: Component, ...props }) => {
 	const [visible, setVisible] = useState(false)
 	const [newPwd, setNewPwd] = useState(false)
 	const { user, theme, toggleTheme, page, setPage, logout } = useContext(AuthContext)
+
+	if (user && user.exp + 60 <= Date.now() / 1000) {
+		logout()
+		toast.error(<h3>Session Expired!</h3>)
+		window.location.replace(`/login`)
+	}
 
 	const handleClick = (_, { name }) => {
 		setVisible(false)
@@ -49,9 +56,16 @@ const Navigator = ({ component: Component, ...props }) => {
 								</Menu.Menu>
 							</Menu>
 							<Container
-								style={{ marginBottom: `1rem`, minHeight: `calc(100vh - 5.5rem)` }}
-								content={<Component {...{ ...props, theme }} />}
+								style={{ marginBottom: `1rem` }}
 								onClick={() => setVisible(false)}
+								content={
+									<Segment
+										clearing
+										inverted={theme}
+										style={{ minHeight: `calc(100vh - 5.5rem)` }}
+										content={<Component {...{ ...props, theme }} />}
+									/>
+								}
 							/>
 							<ChangePassword newPwd={newPwd} setNewPwd={setNewPwd} />
 						</Sidebar.Pusher>
